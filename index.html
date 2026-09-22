@@ -150,25 +150,27 @@
     .gallery-item {
       position: relative;
       border-radius: calc(var(--radius) - 4px);
-      overflow: hidden;
+      overflow: hidden; /* Key for extreme blur clipping */
       aspect-ratio: 1 / 1;
       border: 1px solid var(--glass-border);
-      background: rgba(0, 0, 0, 0.3);
+      background: #000;
       cursor: pointer;
     }
 
+    /* Extreme Blur Effect */
     .blurred-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: blur(25px) scale(1.2); /* Heavy blur trick */
-      transition: filter 0.3s ease;
+      transform: scale(2.2);
+      filter: blur(80px);
+      pointer-events: none;
     }
 
     .gallery-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.4);
+      background: rgba(15, 23, 42, 0.35);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -182,15 +184,15 @@
     }
 
     .btn-item-download {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: white;
       padding: 0.6rem 1.2rem;
       border-radius: 8px;
       font-weight: 600;
       font-size: 0.9rem;
-      pointer-events: none; /* Allows click to pass to parent gallery-item */
+      pointer-events: none;
     }
   </style>
 </head>
@@ -263,7 +265,6 @@
         fileStatus.innerText = `✓ ${files.length} file(s) uploaded`;
         generateBtn.disabled = false;
 
-        // Read user's uploaded image to use as the blurred preview base
         const reader = new FileReader();
         reader.onload = (event) => {
           uploadedImageUrl = event.target.result;
@@ -297,24 +298,24 @@
       }, 150);
     });
 
-    // Exact repository paths matching your 'output' folder name
+    // Clean relative paths for GitHub Pages root
     const outputFiles = [
-      { path: './output/1.txt', name: 'AI_Output_1.png' },
-      { path: './output/2.txt', name: 'AI_Output_2.png' },
-      { path: './output/3.txt', name: 'AI_Output_3.png' },
-      { path: './output/4.txt', name: 'AI_Output_4.png' },
-      { path: './output/5.txt', name: 'AI_Output_5.png' },
-      { path: './output/6.txt', name: 'AI_Output_6.png' }
+      { path: 'output/1.txt', name: 'AI_Output_1.png' },
+      { path: 'output/2.txt', name: 'AI_Output_2.png' },
+      { path: 'output/3.txt', name: 'AI_Output_3.png' },
+      { path: 'output/4.txt', name: 'AI_Output_4.png' },
+      { path: 'output/5.txt', name: 'AI_Output_5.png' },
+      { path: 'output/6.txt', name: 'AI_Output_6.png' }
     ];
 
-    // CSS filter variations to make each blurred image look uniquely generated
+    // Heavy blur filters combined with distinct color hues
     const blurFilters = [
-      'blur(25px) scale(1.2) hue-rotate(45deg) brightness(1.1)',
-      'blur(25px) scale(1.2) hue-rotate(180deg) saturate(1.5)',
-      'blur(25px) scale(1.2) sepia(0.8) contrast(1.2)',
-      'blur(25px) scale(1.2) hue-rotate(270deg) brightness(0.9)',
-      'blur(25px) scale(1.2) invert(0.2) saturate(2)',
-      'blur(25px) scale(1.2) hue-rotate(90deg) contrast(1.4)'
+      'blur(80px) scale(2.2) hue-rotate(60deg) saturate(2)',
+      'blur(80px) scale(2.2) hue-rotate(180deg) brightness(1.2)',
+      'blur(80px) scale(2.2) hue-rotate(240deg) contrast(1.8)',
+      'blur(80px) scale(2.2) hue-rotate(300deg) saturate(2.5)',
+      'blur(80px) scale(2.2) sepia(1) hue-rotate(90deg)',
+      'blur(80px) scale(2.2) invert(0.8) hue-rotate(120deg)'
     ];
 
     function renderBlurredPreviews() {
@@ -341,7 +342,6 @@
         itemCard.appendChild(img);
         itemCard.appendChild(overlay);
 
-        // Allow clicking ANYWHERE on the image card to trigger download
         itemCard.addEventListener('click', () => {
           downloadSinglePng(file.path, file.name);
         });
@@ -350,22 +350,19 @@
       });
     }
 
-    // Master Download All Button Handler
     downloadAllBtn.addEventListener('click', async () => {
       downloadAllBtn.innerText = '⏳ Downloading All...';
       downloadAllBtn.disabled = true;
 
       for (let i = 0; i < outputFiles.length; i++) {
         await downloadSinglePng(outputFiles[i].path, outputFiles[i].name);
-        // Small delay between downloads so the browser handles multiple downloads smoothly
-        await new Promise(resolve => setTimeout(resolve, 400));
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
 
       downloadAllBtn.innerText = '⬇️ Download All (6 Images)';
       downloadAllBtn.disabled = false;
     });
 
-    // Converts text content to binary PNG Blob and triggers direct browser download
     async function downloadSinglePng(filePath, saveFileName) {
       try {
         const response = await fetch(filePath, { cache: 'no-cache' });
