@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Studio - Image Generator</title>
+  <title>AI Image Synthesis Studio</title>
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0b0f19 100%);
+      --glass-bg: rgba(255, 255, 255, 0.04);
+      --glass-border: rgba(255, 255, 255, 0.08);
       --accent-glow: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
       --accent-hover: linear-gradient(135deg, #4f46e5, #9333ea, #db2777);
       --text-main: #f8fafc;
@@ -16,7 +16,7 @@
       --radius: 16px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
     body {
       background: var(--bg-gradient);
@@ -28,6 +28,60 @@
       padding: 2rem 1rem;
     }
 
+    /* Modal Login Screen */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 15, 0.85);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-card h2 { margin-bottom: 0.5rem; font-size: 1.5rem; }
+    .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    .input-field {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--glass-border);
+      background: rgba(15, 23, 42, 0.6);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 1.25rem;
+    }
+
+    .input-field:focus { border-color: #a855f7; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.85rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent-glow);
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Main Container */
     .container { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 2rem; }
 
     header { text-align: center; margin-top: 1rem; }
@@ -44,7 +98,6 @@
     .glass-card {
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
       padding: 2rem;
@@ -131,15 +184,12 @@
       font-size: 1.1rem;
       cursor: pointer;
       box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease;
       width: 100%;
       max-width: 320px;
     }
 
-    .btn-download-all:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 25px rgba(168, 85, 247, 0.6);
-    }
+    .btn-download-all:hover { transform: translateY(-2px); }
 
     .gallery-grid {
       display: grid;
@@ -150,27 +200,27 @@
     .gallery-item {
       position: relative;
       border-radius: calc(var(--radius) - 4px);
-      overflow: hidden; /* Key for extreme blur clipping */
+      overflow: hidden;
       aspect-ratio: 1 / 1;
       border: 1px solid var(--glass-border);
       background: #000;
       cursor: pointer;
     }
 
-    /* Extreme Blur Effect */
+    /* Heavy Blur Previews */
     .blurred-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scale(2.2);
-      filter: blur(80px);
+      transform: scale(2.8);
+      filter: blur(120px);
       pointer-events: none;
     }
 
     .gallery-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.35);
+      background: rgba(15, 23, 42, 0.4);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -198,10 +248,20 @@
 </head>
 <body>
 
+  <!-- Name Entry Overlay -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal-card">
+      <h2>Welcome to AI Studio</h2>
+      <p>Enter your account name or ID to start your generation session.</p>
+      <input type="text" class="input-field" id="userNameInput" placeholder="Enter your name..." required>
+      <button class="btn-submit" id="startSessionBtn">Start Session</button>
+    </div>
+  </div>
+
   <div class="container">
     <header>
       <h1>AI Studio Generator</h1>
-      <p>Upload base images to synthesize high-resolution AI variations</p>
+      <p id="welcomeUserText">Synthesize high-resolution AI output variations</p>
     </header>
 
     <div class="glass-card">
@@ -217,7 +277,7 @@
 
     <div class="glass-card progress-section" id="progressSection">
       <div style="display:flex; justify-content:space-between; font-weight:600;">
-        <span id="statusText">Processing neural models...</span>
+        <span id="statusText">Processing neural networks...</span>
         <span id="progressPercent">0%</span>
       </div>
       <div class="progress-bar-container">
@@ -241,6 +301,23 @@
   </div>
 
   <script>
+    // Modal Handler
+    const userModal = document.getElementById('userModal');
+    const userNameInput = document.getElementById('userNameInput');
+    const startSessionBtn = document.getElementById('startSessionBtn');
+    const welcomeUserText = document.getElementById('welcomeUserText');
+
+    startSessionBtn.addEventListener('click', () => {
+      const name = userNameInput.value.trim();
+      if (name) {
+        welcomeUserText.innerText = `Welcome ${name}, synthesize high-resolution AI variations`;
+        userModal.style.display = 'none';
+      } else {
+        alert("Please enter a valid name to proceed.");
+      }
+    });
+
+    // Main App Logic
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
     const fileStatus = document.getElementById('fileStatus');
@@ -298,24 +375,24 @@
       }, 150);
     });
 
-    // Clean relative paths for GitHub Pages root
+    // Direct PNG file paths matching repository root output folder
     const outputFiles = [
-      { path: 'output/1.txt', name: 'AI_Output_1.png' },
-      { path: 'output/2.txt', name: 'AI_Output_2.png' },
-      { path: 'output/3.txt', name: 'AI_Output_3.png' },
-      { path: 'output/4.txt', name: 'AI_Output_4.png' },
-      { path: 'output/5.txt', name: 'AI_Output_5.png' },
-      { path: 'output/6.txt', name: 'AI_Output_6.png' }
+      { path: 'output/1.png', name: 'AI_Output_1.png' },
+      { path: 'output/2.png', name: 'AI_Output_2.png' },
+      { path: 'output/3.png', name: 'AI_Output_3.png' },
+      { path: 'output/4.png', name: 'AI_Output_4.png' },
+      { path: 'output/5.png', name: 'AI_Output_5.png' },
+      { path: 'output/6.png', name: 'AI_Output_6.png' }
     ];
 
-    // Heavy blur filters combined with distinct color hues
+    // CSS filter combinations for heavy blur visuals
     const blurFilters = [
-      'blur(80px) scale(2.2) hue-rotate(60deg) saturate(2)',
-      'blur(80px) scale(2.2) hue-rotate(180deg) brightness(1.2)',
-      'blur(80px) scale(2.2) hue-rotate(240deg) contrast(1.8)',
-      'blur(80px) scale(2.2) hue-rotate(300deg) saturate(2.5)',
-      'blur(80px) scale(2.2) sepia(1) hue-rotate(90deg)',
-      'blur(80px) scale(2.2) invert(0.8) hue-rotate(120deg)'
+      'blur(120px) scale(2.8) hue-rotate(60deg) saturate(2)',
+      'blur(120px) scale(2.8) hue-rotate(180deg) brightness(1.2)',
+      'blur(120px) scale(2.8) hue-rotate(240deg) contrast(1.8)',
+      'blur(120px) scale(2.8) hue-rotate(300deg) saturate(2.5)',
+      'blur(120px) scale(2.8) sepia(1) hue-rotate(90deg)',
+      'blur(120px) scale(2.8) invert(0.8) hue-rotate(120deg)'
     ];
 
     function renderBlurredPreviews() {
@@ -343,7 +420,7 @@
         itemCard.appendChild(overlay);
 
         itemCard.addEventListener('click', () => {
-          downloadSinglePng(file.path, file.name);
+          downloadDirectPng(file.path, file.name);
         });
 
         galleryGrid.appendChild(itemCard);
@@ -355,34 +432,20 @@
       downloadAllBtn.disabled = true;
 
       for (let i = 0; i < outputFiles.length; i++) {
-        await downloadSinglePng(outputFiles[i].path, outputFiles[i].name);
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await downloadDirectPng(outputFiles[i].path, outputFiles[i].name);
+        await new Promise(resolve => setTimeout(resolve, 400));
       }
 
       downloadAllBtn.innerText = '⬇️ Download All (6 Images)';
       downloadAllBtn.disabled = false;
     });
 
-    async function downloadSinglePng(filePath, saveFileName) {
+    async function downloadDirectPng(filePath, saveFileName) {
       try {
         const response = await fetch(filePath, { cache: 'no-cache' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        let rawBase64 = await response.text();
-        rawBase64 = rawBase64.trim().replace(/[\r\n\s]+/g, '');
-
-        if (rawBase64.includes(';base64,')) {
-          rawBase64 = rawBase64.split(';base64,')[1];
-        }
-
-        const byteCharacters = atob(rawBase64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-
-        const blob = new Blob([byteArray], { type: 'image/png' });
+        const blob = await response.blob();
         const blobUrl = URL.createObjectURL(blob);
 
         const a = document.createElement('a');
@@ -395,7 +458,7 @@
         URL.revokeObjectURL(blobUrl);
 
       } catch (err) {
-        alert(`Could not fetch file: ${filePath}. Please verify the file exists in your repository.`);
+        alert(`Could not download ${saveFileName}. Ensure the file exists in your repository at ${filePath}.`);
         console.error(err);
       }
     }
