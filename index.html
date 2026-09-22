@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Studio - Image Generator</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --accent-glow: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 2rem; }
+
+    header { text-align: center; }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: var(--accent-glow);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .upload-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border-radius: calc(var(--radius) - 4px);
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .file-input { display: none; }
+
+    .btn-generate {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: calc(var(--radius) - 4px);
+      background: var(--accent-glow);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .progress-section, .output-section { display: none; }
+    .progress-section.active, .output-section.active { display: block; }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar { height: 100%; width: 0%; background: var(--accent-glow); transition: width 0.2s ease; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: calc(var(--radius) - 4px);
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--glass-border);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover .gallery-overlay,
+    .gallery-item:active .gallery-overlay { opacity: 1; }
+
+    .btn-download {
+      background: var(--accent-glow);
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>AI Image Generator</h1>
+      <p>Upload base images to synthesize outputs</p>
+    </header>
+
+    <div class="glass-card">
+      <div class="upload-zone" id="uploadZone">
+        <p><strong>Click to upload</strong> or drag & drop images here</p>
+        <input type="file" id="fileInput" class="file-input" multiple accept="image/*">
+      </div>
+      <button class="btn-generate" id="generateBtn" disabled>Generate AI Images</button>
+    </div>
+
+    <div class="glass-card progress-section" id="progressSection">
+      <div style="display:flex; justify-content:space-between;">
+        <span id="statusText">Generating...</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="glass-card output-section" id="outputSection">
+      <h2>Generated Results</h2>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const progressSection = document.getElementById('progressSection');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
+    const outputSection = document.getElementById('outputSection');
+    const galleryGrid = document.getElementById('galleryGrid');
+
+    let uploadedFiles = [];
+
+    uploadZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      uploadedFiles = Array.from(e.target.files);
+      if (uploadedFiles.length > 0) generateBtn.disabled = false;
+    });
+
+    generateBtn.addEventListener('click', () => {
+      generateBtn.disabled = true;
+      outputSection.classList.remove('active');
+      progressSection.classList.add('active');
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = `${progress}%`;
+        progressPercent.innerText = `${progress}%`;
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            progressSection.classList.remove('active');
+            renderTxtFilesAsImages(); 
+            generateBtn.disabled = false;
+          }, 400);
+        }
+      }, 150);
+    });
+
+    // Explicit relative pathing for GitHub Pages subfolder compatibility
+    const outputTxtFiles = [
+      './outputs/1.txt',
+      './outputs/2.txt',
+      './outputs/3.txt',
+      './outputs/4.txt',
+      './outputs/5.txt',
+      './outputs/6.txt'
+    ];
+
+    // Converts Base64 text into a Blob URL (Ensures compatibility with browser downloads)
+    function base64ToBlobUrl(base64Data) {
+      try {
+        let cleanBase64 = base64Data.trim().replace(/[\r\n\s]+/g, '');
+        let contentType = 'image/png';
+
+        if (cleanBase64.includes(';base64,')) {
+          const parts = cleanBase64.split(';base64,');
+          contentType = parts[0].replace('data:', '') || 'image/png';
+          cleanBase64 = parts[1];
+        }
+
+        const byteCharacters = atob(cleanBase64);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+          const slice = byteCharacters.slice(offset, offset + 512);
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+
+        const blob = new Blob(byteArrays, { type: contentType });
+        return URL.createObjectURL(blob);
+      } catch (err) {
+        console.error("Base64 parsing failed:", err);
+        return null;
+      }
+    }
+
+    async function renderTxtFilesAsImages() {
+      outputSection.classList.add('active');
+      galleryGrid.innerHTML = '';
+
+      for (let index = 0; index < outputTxtFiles.length; index++) {
+        const txtFilePath = outputTxtFiles[index];
+
+        try {
+          const response = await fetch(txtFilePath, { cache: 'no-cache' });
+          if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+          
+          const rawBase64 = await response.text();
+          const blobUrl = base64ToBlobUrl(rawBase64);
+
+          if (!blobUrl) continue;
+
+          const itemContainer = document.createElement('div');
+          itemContainer.className = 'gallery-item';
+
+          const img = document.createElement('img');
+          img.src = blobUrl;
+
+          const overlay = document.createElement('div');
+          overlay.className = 'gallery-overlay';
+
+          const downloadBtn = document.createElement('button');
+          downloadBtn.className = 'btn-download';
+          downloadBtn.innerText = 'Download';
+
+          downloadBtn.addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = `output_${index + 1}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          });
+
+          overlay.appendChild(downloadBtn);
+          itemContainer.appendChild(img);
+          itemContainer.appendChild(overlay);
+          galleryGrid.appendChild(itemContainer);
+
+        } catch (err) {
+          console.error("Failed to load text file from GitHub Pages:", txtFilePath, err);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
