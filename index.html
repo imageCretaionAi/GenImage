@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NexusAI Studio - Professional Image Synthesis</title>
+  <title>NexusAI Studio - Sufiyan_lala Workspace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #090d16;
-      --panel-bg: rgba(17, 24, 39, 0.65);
-      --glass-border: rgba(255, 255, 255, 0.1);
+      --bg-dark: #070a12;
+      --panel-bg: rgba(15, 23, 42, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.12);
       --accent-glow: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-      --accent-hover: linear-gradient(135deg, #4f46e5 0%, #9333ea 50%, #db2777 100%);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --radius: 20px;
@@ -24,118 +23,116 @@
     body {
       background: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%);
+        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.08) 0%, transparent 60%);
       min-height: 100vh;
       color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2.5rem 1rem;
+      overflow-x: hidden;
     }
-
-    /* Modal Welcome Overlay */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(5, 8, 15, 0.88);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 1rem;
-    }
-
-    .modal-card {
-      background: rgba(17, 24, 39, 0.85);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      padding: 2.5rem;
-      width: 100%;
-      max-width: 440px;
-      text-align: center;
-      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7);
-    }
-
-    .modal-badge {
-      display: inline-block;
-      padding: 0.35rem 0.85rem;
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      color: #c084fc;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 1rem;
-    }
-
-    .modal-card h2 { margin-bottom: 0.5rem; font-size: 1.6rem; font-weight: 800; }
-    .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.75rem; line-height: 1.5; }
-
-    .input-field {
-      width: 100%;
-      padding: 0.9rem 1.1rem;
-      border-radius: 12px;
-      border: 1px solid var(--glass-border);
-      background: rgba(11, 15, 25, 0.8);
-      color: white;
-      font-size: 1rem;
-      outline: none;
-      margin-bottom: 1.25rem;
-      transition: border-color 0.2s;
-    }
-
-    .input-field:focus { border-color: #a855f7; }
-
-    .btn-submit {
-      width: 100%;
-      padding: 0.95rem;
-      border: none;
-      border-radius: 12px;
-      background: var(--accent-glow);
-      color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35);
-      transition: opacity 0.2s, transform 0.2s;
-    }
-
-    .btn-submit:hover { opacity: 0.95; transform: translateY(-1px); }
 
     /* Layout Container */
-    .container { width: 100%; max-width: 960px; display: flex; flex-direction: column; gap: 2rem; }
+    .container {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      position: relative;
+      z-index: 2;
+    }
 
-    header { text-align: center; }
-    header .studio-tag {
+    /* Animated Welcome Card Header */
+    .hero-welcome-card {
+      position: relative;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2.75rem 2rem;
+      text-align: center;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      animation: heroFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Background Animated Glow Effects */
+    .hero-welcome-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg at 50% 50%, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2));
+      animation: rotateGlow 12s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge-status {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
+      gap: 0.6rem;
+      padding: 0.45rem 1.1rem;
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #e9d5ff;
       border-radius: 30px;
       font-size: 0.8rem;
-      font-weight: 600;
-      color: #38bdf8;
-      margin-bottom: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+      animation: pulseGlow 2.5s ease-in-out infinite alternate;
     }
 
-    header h1 {
-      font-size: 2.75rem;
-      font-weight: 800;
-      background: var(--accent-glow);
+    .badge-status .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #38bdf8;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #38bdf8;
+      animation: blink 1.2s infinite;
+    }
+
+    .hero-welcome-title {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 0.6rem;
+    }
+
+    /* Animated Gradient Text for Name */
+    .animated-user-name {
+      background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #e879f9, #38bdf8);
+      background-size: 300% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.5px;
+      animation: shineText 5s linear infinite;
+      display: inline-block;
     }
-    header p { color: var(--text-muted); font-size: 1.05rem; }
 
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Glass Panels */
     .glass-card {
       background: var(--panel-bg);
       backdrop-filter: blur(20px);
@@ -148,24 +145,25 @@
 
     /* Upload & Source Preview Area */
     .upload-zone {
-      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border: 2px dashed rgba(255, 255, 255, 0.18);
       border-radius: calc(var(--radius) - 6px);
       padding: 2.5rem 1.5rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
-      background: rgba(11, 15, 25, 0.3);
+      background: rgba(11, 15, 25, 0.4);
     }
 
     .upload-zone:hover {
       border-color: #a855f7;
-      background: rgba(168, 85, 247, 0.04);
+      background: rgba(168, 85, 247, 0.05);
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.15);
     }
 
-    .upload-icon { font-size: 2.75rem; margin-bottom: 0.75rem; display: block; }
+    .upload-icon { font-size: 2.8rem; margin-bottom: 0.75rem; display: block; }
     .file-input { display: none; }
 
-    /* Live Input Preview Box */
+    /* Source Image Preview Box */
     .source-preview-container {
       display: none;
       flex-direction: column;
@@ -181,45 +179,37 @@
     .source-preview-container.active { display: flex; }
 
     .source-img-wrap {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       border-radius: 12px;
       overflow: hidden;
-      border: 2px solid rgba(168, 85, 247, 0.4);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+      border: 2px solid rgba(168, 85, 247, 0.5);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
     }
 
-    .source-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .source-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-    .file-status {
-      font-size: 0.95rem;
-      color: #38bdf8;
-      font-weight: 600;
-    }
+    .file-status { font-size: 0.95rem; color: #38bdf8; font-weight: 700; }
 
     .btn-generate {
       margin-top: 1.5rem;
       width: 100%;
-      padding: 1.1rem;
+      padding: 1.15rem;
       border: none;
       border-radius: 12px;
       background: var(--accent-glow);
       color: white;
       font-size: 1.1rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       box-shadow: 0 10px 25px rgba(168, 85, 247, 0.35);
-      transition: all 0.2s ease;
+      transition: all 0.25 ease;
     }
 
     .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(168, 85, 247, 0.5); }
     .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* Progress Indicator */
+    /* Progress Bar */
     .progress-section, .output-section { display: none; }
     .progress-section.active, .output-section.active { display: block; }
 
@@ -239,7 +229,7 @@
       transition: width 0.2s ease;
     }
 
-    /* Output Section */
+    /* Output Gallery */
     .output-header {
       display: flex;
       flex-wrap: wrap;
@@ -269,14 +259,13 @@
 
     .btn-download-all:hover { transform: translateY(-2px); }
 
-    /* Variations Grid */
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 1.5rem;
     }
 
-    /* Variation Card is clickable as a full Download Button */
+    /* Pure PNG Preview Cards without filters */
     .gallery-item {
       position: relative;
       border-radius: 16px;
@@ -285,33 +274,32 @@
       border: 1px solid var(--glass-border);
       background: #000;
       cursor: pointer;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
       transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .gallery-item:hover {
       transform: translateY(-6px);
       border-color: #a855f7;
-      box-shadow: 0 18px 36px rgba(168, 85, 247, 0.3);
+      box-shadow: 0 18px 36px rgba(168, 85, 247, 0.35);
     }
 
+    /* Clean PNG Display Image */
     .preview-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      filter: none !important; /* Forces no filter */
       transition: transform 0.4s ease;
     }
 
-    .gallery-item:hover .preview-img {
-      transform: scale(1.06);
-    }
+    .gallery-item:hover .preview-img { transform: scale(1.05); }
 
-    /* Style Label Tag on Image */
     .style-tag {
       position: absolute;
       top: 12px;
       left: 12px;
-      background: rgba(9, 13, 22, 0.75);
+      background: rgba(9, 13, 22, 0.85);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: white;
@@ -322,11 +310,10 @@
       z-index: 2;
     }
 
-    /* Hover Download Overlay */
     .gallery-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(9, 13, 22, 0.85) 0%, rgba(9, 13, 22, 0.2) 60%, transparent 100%);
+      background: linear-gradient(to top, rgba(9, 13, 22, 0.9) 0%, rgba(9, 13, 22, 0.2) 60%, transparent 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -337,9 +324,7 @@
       z-index: 3;
     }
 
-    .gallery-item:hover .gallery-overlay {
-      opacity: 1;
-    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
 
     .btn-item-download {
       width: 100%;
@@ -355,56 +340,81 @@
       justify-content: center;
       gap: 0.5rem;
       box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-      pointer-events: none; /* Allows the click event to fire on gallery-item */
+      pointer-events: none;
+    }
+
+    /* Keyframe Animations */
+    @keyframes heroFadeIn {
+      from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes rotateGlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes shineText {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+      100% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Modal Session Entry Screen -->
-  <div class="modal-overlay" id="userModal">
-    <div class="modal-card">
-      <span class="modal-badge">SDXL Turbo Engine</span>
-      <h2>Welcome to AI Studio</h2>
-      <p>Enter your session handle or developer name to initialize the neural render cluster.</p>
-      <input type="text" class="input-field" id="userNameInput" placeholder="e.g. Alex Creator" required>
-      <button class="btn-submit" id="startSessionBtn">Launch Engine Studio</button>
-    </div>
-  </div>
-
   <div class="container">
-    <header>
-      <div class="studio-tag">⚡ Engine Active • v3.4 Neural Pipeline</div>
-      <h1>AI Image Studio</h1>
-      <p id="welcomeUserText">Synthesize multi-style high-resolution AI outputs</p>
-    </header>
+    <!-- Animated Welcome Hero Container -->
+    <div class="hero-welcome-card">
+      <div class="hero-content">
+        <div class="badge-status">
+          <span class="dot"></span>
+          Workspace Activated
+        </div>
+        <h1 class="hero-welcome-title">
+          Welcome back, <span class="animated-user-name">Sufiyan_lala</span>
+        </h1>
+        <p class="hero-subtitle">
+          Your Neural AI Studio is online. Upload base images to render full 4K output PNGs directly from your repository folder.
+        </p>
+      </div>
+    </div>
 
-    <!-- Upload Panel -->
+    <!-- Base Upload Section -->
     <div class="glass-card">
       <div class="upload-zone" id="uploadZone">
-        <span class="upload-icon">✨</span>
-        <p style="font-size: 1.1rem; font-weight: 700;">Drop base photo here or click to browse</p>
+        <span class="upload-icon">⚡</span>
+        <p style="font-size: 1.1rem; font-weight: 700;">Drop base image here or click to choose</p>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem;">
-          Supports PNG, JPG, WEBP (Up to 25MB)
+          PNG, JPG, WEBP formats supported
         </p>
         <input type="file" id="fileInput" class="file-input" accept="image/*">
       </div>
 
-      <!-- Real-Time Input Image Preview -->
+      <!-- Live Input Preview -->
       <div class="source-preview-container" id="sourcePreviewBox">
         <div class="source-img-wrap">
-          <img id="sourcePreviewImg" src="" alt="Source Preview">
+          <img id="sourcePreviewImg" src="" alt="Source Base">
         </div>
-        <div class="file-status" id="fileStatus">✓ Base Image Loaded</div>
+        <div class="file-status" id="fileStatus">✓ Base Image Successfully Loaded</div>
       </div>
 
-      <button class="btn-generate" id="generateBtn" disabled>Synthesize 6 AI Variations</button>
+      <button class="btn-generate" id="generateBtn" disabled>Load output/ PNG Previews</button>
     </div>
 
-    <!-- Progress Indicator -->
+    <!-- Progress Loader -->
     <div class="glass-card progress-section" id="progressSection">
       <div style="display:flex; justify-content:space-between; font-weight:600;">
-        <span id="statusText">Allocating GPU cluster nodes...</span>
+        <span id="statusText">Fetching PNGs from output folder...</span>
         <span id="progressPercent">0%</span>
       </div>
       <div class="progress-bar-container">
@@ -412,12 +422,12 @@
       </div>
     </div>
 
-    <!-- Generated Outputs Gallery -->
+    <!-- Output Images Grid -->
     <div class="glass-card output-section" id="outputSection">
       <div class="output-header">
         <div class="output-title">
-          <h2>Synthesized AI Outputs</h2>
-          <p>Click any variation card to download its 4K high-res PNG file directly.</p>
+          <h2>Output Folder Images (PNG)</h2>
+          <p>Click any card to download that exact output image file.</p>
         </div>
         <button class="btn-download-all" id="downloadAllBtn">⬇️ Download All (6 PNGs)</button>
       </div>
@@ -427,23 +437,6 @@
   </div>
 
   <script>
-    // Modal Session Handler
-    const userModal = document.getElementById('userModal');
-    const userNameInput = document.getElementById('userNameInput');
-    const startSessionBtn = document.getElementById('startSessionBtn');
-    const welcomeUserText = document.getElementById('welcomeUserText');
-
-    startSessionBtn.addEventListener('click', () => {
-      const name = userNameInput.value.trim();
-      if (name) {
-        welcomeUserText.innerText = `Welcome ${name} • Ready to generate high-resolution AI variations`;
-        userModal.style.display = 'none';
-      } else {
-        alert("Please enter a handle name to proceed.");
-      }
-    });
-
-    // Main App Functionality
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
     const sourcePreviewBox = document.getElementById('sourcePreviewBox');
@@ -459,8 +452,6 @@
     const downloadAllBtn = document.getElementById('downloadAllBtn');
     const galleryGrid = document.getElementById('galleryGrid');
 
-    let uploadedImageUrl = '';
-
     uploadZone.addEventListener('click', () => fileInput.click());
     
     fileInput.addEventListener('change', (e) => {
@@ -468,8 +459,7 @@
       if (files.length > 0) {
         const reader = new FileReader();
         reader.onload = (event) => {
-          uploadedImageUrl = event.target.result;
-          sourcePreviewImg.src = uploadedImageUrl;
+          sourcePreviewImg.src = event.target.result;
           sourcePreviewBox.classList.add('active');
           generateBtn.disabled = false;
         };
@@ -488,73 +478,63 @@
         progressBar.style.width = `${progress}%`;
         progressPercent.innerText = `${progress}%`;
 
-        if (progress === 30) statusText.innerText = "Applying style transfer layers...";
-        if (progress === 70) statusText.innerText = "Rendering 4K resolution textures...";
+        if (progress === 40) statusText.innerText = "Loading output/1.png to output/6.png...";
+        if (progress === 80) statusText.innerText = "Verifying high-res image files...";
 
         if (progress >= 100) {
           clearInterval(interval);
           setTimeout(() => {
             progressSection.classList.remove('active');
-            renderVariationsGallery();
+            renderOutputFolderGallery();
             generateBtn.disabled = false;
           }, 300);
         }
-      }, 140);
+      }, 120);
     });
 
-    // Output PNG paths located in repository 'output' folder
+    // Exact direct PNG file references in your repo's output directory
     const outputFiles = [
-      { path: 'output/1.png', name: 'AI_Variation_1.png', style: 'Cyberpunk Neon' },
-      { path: 'output/2.png', name: 'AI_Variation_2.png', style: 'Cinematic Film' },
-      { path: 'output/3.png', name: 'AI_Variation_3.png', style: 'Noir Drama' },
-      { path: 'output/4.png', name: 'AI_Variation_4.png', style: 'Golden Hour' },
-      { path: 'output/5.png', name: 'AI_Variation_5.png', style: 'Emerald Dreams' },
-      { path: 'output/6.png', name: 'AI_Variation_6.png', style: 'Vintage Pastel' }
+      { path: 'output/1.png', name: '1.png', label: 'Output 1' },
+      { path: 'output/2.png', name: '2.png', label: 'Output 2' },
+      { path: 'output/3.png', name: '3.png', label: 'Output 3' },
+      { path: 'output/4.png', name: '4.png', label: 'Output 4' },
+      { path: 'output/5.png', name: '5.png', label: 'Output 5' },
+      { path: 'output/6.png', name: '6.png', label: 'Output 6' }
     ];
 
-    // CSS filters applied to user image to generate distinct real-time previews
-    const styleFilters = [
-      'hue-rotate(190deg) contrast(1.35) saturate(2) brightness(1.1)',
-      'contrast(1.2) saturate(0.85) sepia(0.2) brightness(1.05)',
-      'grayscale(1) contrast(1.6) brightness(0.9)',
-      'sepia(0.6) hue-rotate(-20deg) saturate(1.8) brightness(1.1)',
-      'hue-rotate(90deg) saturate(1.6) contrast(1.25)',
-      'sepia(0.3) saturate(1.3) hue-rotate(290deg) brightness(1.15)'
-    ];
-
-    function renderVariationsGallery() {
+    function renderOutputFolderGallery() {
       outputSection.classList.add('active');
       galleryGrid.innerHTML = '';
 
-      outputFiles.forEach((file, index) => {
+      outputFiles.forEach((file) => {
         const itemCard = document.createElement('div');
         itemCard.className = 'gallery-item';
 
-        // Style Tag
+        // Label Badge
         const tag = document.createElement('div');
         tag.className = 'style-tag';
-        tag.innerText = file.style;
+        tag.innerText = file.label;
 
-        // Preview Image using uploaded base + style filter
+        // Clean Image without CSS Filters
         const img = document.createElement('img');
         img.className = 'preview-img';
-        img.src = uploadedImageUrl; 
-        img.style.filter = styleFilters[index % styleFilters.length];
+        img.src = file.path; 
+        img.alt = file.name;
 
-        // Hover Overlay with Download Action
+        // Hover Overlay
         const overlay = document.createElement('div');
         overlay.className = 'gallery-overlay';
 
         const downloadBtn = document.createElement('button');
         downloadBtn.className = 'btn-item-download';
-        downloadBtn.innerHTML = `⬇️ Download PNG`;
+        downloadBtn.innerHTML = `⬇️ Download ${file.name}`;
 
         overlay.appendChild(downloadBtn);
         itemCard.appendChild(tag);
         itemCard.appendChild(img);
         itemCard.appendChild(overlay);
 
-        // Entire Card is an Active Download Button
+        // Entire Card triggers individual PNG download
         itemCard.addEventListener('click', () => {
           downloadDirectPng(file.path, file.name);
         });
@@ -563,7 +543,7 @@
       });
     }
 
-    // Master Download All Handler
+    // Bulk Download Handler
     downloadAllBtn.addEventListener('click', async () => {
       downloadAllBtn.innerText = '⏳ Downloading All...';
       downloadAllBtn.disabled = true;
@@ -577,7 +557,7 @@
       downloadAllBtn.disabled = false;
     });
 
-    // Directly fetches PNG from repository 'output' folder & triggers browser save
+    // Directly fetches and saves file from repository folder
     async function downloadDirectPng(filePath, saveFileName) {
       try {
         const response = await fetch(filePath, { cache: 'no-cache' });
@@ -596,7 +576,7 @@
         URL.revokeObjectURL(blobUrl);
 
       } catch (err) {
-        alert(`Could not download ${saveFileName}. Verify the image file exists at location "${filePath}" in your GitHub repo.`);
+        alert(`Could not fetch ${saveFileName}. Ensure the file exists at path: ${filePath}`);
         console.error(err);
       }
     }
