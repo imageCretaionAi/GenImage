@@ -3,37 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Image Synthesis Studio</title>
+  <title>NexusAI Studio - Professional Image Synthesis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0b0f19 100%);
-      --glass-bg: rgba(255, 255, 255, 0.04);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --accent-glow: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
-      --accent-hover: linear-gradient(135deg, #4f46e5, #9333ea, #db2777);
+      --bg-dark: #090d16;
+      --panel-bg: rgba(17, 24, 39, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --accent-glow: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --accent-hover: linear-gradient(135deg, #4f46e5 0%, #9333ea 50%, #db2777 100%);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --radius: 16px;
+      --radius: 20px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
 
     body {
-      background: var(--bg-gradient);
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%);
       min-height: 100vh;
       color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 2.5rem 1rem;
     }
 
-    /* Modal Login Screen */
+    /* Modal Welcome Overlay */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(5, 8, 15, 0.85);
-      backdrop-filter: blur(20px);
+      background: rgba(5, 8, 15, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -42,87 +49,153 @@
     }
 
     .modal-card {
-      background: rgba(30, 41, 59, 0.7);
+      background: rgba(17, 24, 39, 0.85);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
       padding: 2.5rem;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7);
     }
 
-    .modal-card h2 { margin-bottom: 0.5rem; font-size: 1.5rem; }
-    .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .modal-badge {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #c084fc;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+
+    .modal-card h2 { margin-bottom: 0.5rem; font-size: 1.6rem; font-weight: 800; }
+    .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.75rem; line-height: 1.5; }
 
     .input-field {
       width: 100%;
-      padding: 0.85rem 1rem;
-      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      border-radius: 12px;
       border: 1px solid var(--glass-border);
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(11, 15, 25, 0.8);
       color: white;
       font-size: 1rem;
       outline: none;
       margin-bottom: 1.25rem;
+      transition: border-color 0.2s;
     }
 
     .input-field:focus { border-color: #a855f7; }
 
     .btn-submit {
       width: 100%;
-      padding: 0.85rem;
+      padding: 0.95rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       background: var(--accent-glow);
       color: white;
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35);
+      transition: opacity 0.2s, transform 0.2s;
     }
 
-    /* Main Container */
-    .container { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 2rem; }
+    .btn-submit:hover { opacity: 0.95; transform: translateY(-1px); }
 
-    header { text-align: center; margin-top: 1rem; }
+    /* Layout Container */
+    .container { width: 100%; max-width: 960px; display: flex; flex-direction: column; gap: 2rem; }
+
+    header { text-align: center; }
+    header .studio-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #38bdf8;
+      margin-bottom: 0.75rem;
+    }
+
     header h1 {
-      font-size: 2.5rem;
+      font-size: 2.75rem;
       font-weight: 800;
       background: var(--accent-glow);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
     }
-    header p { color: var(--text-muted); font-size: 1rem; }
+    header p { color: var(--text-muted); font-size: 1.05rem; }
 
     .glass-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      padding: 2.25rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
+    /* Upload & Source Preview Area */
     .upload-zone {
-      border: 2px dashed rgba(255, 255, 255, 0.2);
-      border-radius: calc(var(--radius) - 4px);
-      padding: 2.5rem 1rem;
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: calc(var(--radius) - 6px);
+      padding: 2.5rem 1.5rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      background: rgba(11, 15, 25, 0.3);
     }
 
     .upload-zone:hover {
       border-color: #a855f7;
-      background: rgba(168, 85, 247, 0.05);
+      background: rgba(168, 85, 247, 0.04);
     }
 
-    .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+    .upload-icon { font-size: 2.75rem; margin-bottom: 0.75rem; display: block; }
     .file-input { display: none; }
 
+    /* Live Input Preview Box */
+    .source-preview-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      padding: 1.25rem;
+      background: rgba(11, 15, 25, 0.6);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+    }
+
+    .source-preview-container.active { display: flex; }
+
+    .source-img-wrap {
+      width: 140px;
+      height: 140px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+    }
+
+    .source-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .file-status {
-      margin-top: 1rem;
       font-size: 0.95rem;
       color: #38bdf8;
       font-weight: 600;
@@ -131,31 +204,32 @@
     .btn-generate {
       margin-top: 1.5rem;
       width: 100%;
-      padding: 1rem;
+      padding: 1.1rem;
       border: none;
-      border-radius: calc(var(--radius) - 4px);
+      border-radius: 12px;
       background: var(--accent-glow);
       color: white;
       font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3);
+      box-shadow: 0 10px 25px rgba(168, 85, 247, 0.35);
       transition: all 0.2s ease;
     }
 
-    .btn-generate:hover { transform: translateY(-2px); }
-    .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(168, 85, 247, 0.5); }
+    .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
+    /* Progress Indicator */
     .progress-section, .output-section { display: none; }
     .progress-section.active, .output-section.active { display: block; }
 
     .progress-bar-container {
       width: 100%;
       height: 12px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 20px;
       overflow: hidden;
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
     .progress-bar {
@@ -165,119 +239,172 @@
       transition: width 0.2s ease;
     }
 
+    /* Output Section */
     .output-header {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 1rem;
+      justify-content: space-between;
       align-items: center;
-      text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--glass-border);
     }
+
+    .output-title h2 { font-size: 1.5rem; font-weight: 800; }
+    .output-title p { color: var(--text-muted); font-size: 0.88rem; margin-top: 0.2rem; }
 
     .btn-download-all {
       background: var(--accent-glow);
       color: white;
       border: none;
-      padding: 1rem 2rem;
+      padding: 0.85rem 1.75rem;
       border-radius: 12px;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       cursor: pointer;
-      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35);
       transition: transform 0.2s ease;
-      width: 100%;
-      max-width: 320px;
     }
 
     .btn-download-all:hover { transform: translateY(-2px); }
 
+    /* Variations Grid */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
     }
 
+    /* Variation Card is clickable as a full Download Button */
     .gallery-item {
       position: relative;
-      border-radius: calc(var(--radius) - 4px);
+      border-radius: 16px;
       overflow: hidden;
       aspect-ratio: 1 / 1;
       border: 1px solid var(--glass-border);
       background: #000;
       cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Heavy Blur Previews */
-    .blurred-img {
+    .gallery-item:hover {
+      transform: translateY(-6px);
+      border-color: #a855f7;
+      box-shadow: 0 18px 36px rgba(168, 85, 247, 0.3);
+    }
+
+    .preview-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scale(2.8);
-      filter: blur(120px);
-      pointer-events: none;
+      transition: transform 0.4s ease;
     }
 
+    .gallery-item:hover .preview-img {
+      transform: scale(1.06);
+    }
+
+    /* Style Label Tag on Image */
+    .style-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(9, 13, 22, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    /* Hover Download Overlay */
     .gallery-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.4);
+      background: linear-gradient(to top, rgba(9, 13, 22, 0.85) 0%, rgba(9, 13, 22, 0.2) 60%, transparent 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: background 0.3s ease;
+      justify-content: flex-end;
+      padding: 1.25rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 3;
     }
 
     .gallery-item:hover .gallery-overlay {
-      background: rgba(15, 23, 42, 0.65);
+      opacity: 1;
     }
 
     .btn-item-download {
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      width: 100%;
+      background: var(--accent-glow);
       color: white;
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      font-weight: 600;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 10px;
+      font-weight: 700;
       font-size: 0.9rem;
-      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+      pointer-events: none; /* Allows the click event to fire on gallery-item */
     }
   </style>
 </head>
 <body>
 
-  <!-- Name Entry Overlay -->
+  <!-- Modal Session Entry Screen -->
   <div class="modal-overlay" id="userModal">
     <div class="modal-card">
+      <span class="modal-badge">SDXL Turbo Engine</span>
       <h2>Welcome to AI Studio</h2>
-      <p>Enter your account name or ID to start your generation session.</p>
-      <input type="text" class="input-field" id="userNameInput" placeholder="Enter your name..." required>
-      <button class="btn-submit" id="startSessionBtn">Start Session</button>
+      <p>Enter your session handle or developer name to initialize the neural render cluster.</p>
+      <input type="text" class="input-field" id="userNameInput" placeholder="e.g. Alex Creator" required>
+      <button class="btn-submit" id="startSessionBtn">Launch Engine Studio</button>
     </div>
   </div>
 
   <div class="container">
     <header>
-      <h1>AI Studio Generator</h1>
-      <p id="welcomeUserText">Synthesize high-resolution AI output variations</p>
+      <div class="studio-tag">⚡ Engine Active • v3.4 Neural Pipeline</div>
+      <h1>AI Image Studio</h1>
+      <p id="welcomeUserText">Synthesize multi-style high-resolution AI outputs</p>
     </header>
 
+    <!-- Upload Panel -->
     <div class="glass-card">
       <div class="upload-zone" id="uploadZone">
-        <span class="upload-icon">📁</span>
-        <p><strong>Click to choose images</strong> or drag & drop files here</p>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">PNG, JPG, WEBP formats supported</p>
-        <input type="file" id="fileInput" class="file-input" multiple accept="image/*">
+        <span class="upload-icon">✨</span>
+        <p style="font-size: 1.1rem; font-weight: 700;">Drop base photo here or click to browse</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem;">
+          Supports PNG, JPG, WEBP (Up to 25MB)
+        </p>
+        <input type="file" id="fileInput" class="file-input" accept="image/*">
       </div>
-      <div class="file-status" id="fileStatus"></div>
-      <button class="btn-generate" id="generateBtn" disabled>Generate AI Images</button>
+
+      <!-- Real-Time Input Image Preview -->
+      <div class="source-preview-container" id="sourcePreviewBox">
+        <div class="source-img-wrap">
+          <img id="sourcePreviewImg" src="" alt="Source Preview">
+        </div>
+        <div class="file-status" id="fileStatus">✓ Base Image Loaded</div>
+      </div>
+
+      <button class="btn-generate" id="generateBtn" disabled>Synthesize 6 AI Variations</button>
     </div>
 
+    <!-- Progress Indicator -->
     <div class="glass-card progress-section" id="progressSection">
       <div style="display:flex; justify-content:space-between; font-weight:600;">
-        <span id="statusText">Processing neural networks...</span>
+        <span id="statusText">Allocating GPU cluster nodes...</span>
         <span id="progressPercent">0%</span>
       </div>
       <div class="progress-bar-container">
@@ -285,15 +412,14 @@
       </div>
     </div>
 
+    <!-- Generated Outputs Gallery -->
     <div class="glass-card output-section" id="outputSection">
       <div class="output-header">
-        <div>
-          <h2>Generated Variations Ready</h2>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
-            Click on any variation image or use the button below to download all.
-          </p>
+        <div class="output-title">
+          <h2>Synthesized AI Outputs</h2>
+          <p>Click any variation card to download its 4K high-res PNG file directly.</p>
         </div>
-        <button class="btn-download-all" id="downloadAllBtn">⬇️ Download All (6 Images)</button>
+        <button class="btn-download-all" id="downloadAllBtn">⬇️ Download All (6 PNGs)</button>
       </div>
 
       <div class="gallery-grid" id="galleryGrid"></div>
@@ -301,7 +427,7 @@
   </div>
 
   <script>
-    // Modal Handler
+    // Modal Session Handler
     const userModal = document.getElementById('userModal');
     const userNameInput = document.getElementById('userNameInput');
     const startSessionBtn = document.getElementById('startSessionBtn');
@@ -310,17 +436,18 @@
     startSessionBtn.addEventListener('click', () => {
       const name = userNameInput.value.trim();
       if (name) {
-        welcomeUserText.innerText = `Welcome ${name}, synthesize high-resolution AI variations`;
+        welcomeUserText.innerText = `Welcome ${name} • Ready to generate high-resolution AI variations`;
         userModal.style.display = 'none';
       } else {
-        alert("Please enter a valid name to proceed.");
+        alert("Please enter a handle name to proceed.");
       }
     });
 
-    // Main App Logic
+    // Main App Functionality
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
-    const fileStatus = document.getElementById('fileStatus');
+    const sourcePreviewBox = document.getElementById('sourcePreviewBox');
+    const sourcePreviewImg = document.getElementById('sourcePreviewImg');
     const generateBtn = document.getElementById('generateBtn');
     
     const progressSection = document.getElementById('progressSection');
@@ -339,12 +466,12 @@
     fileInput.addEventListener('change', (e) => {
       const files = e.target.files;
       if (files.length > 0) {
-        fileStatus.innerText = `✓ ${files.length} file(s) uploaded`;
-        generateBtn.disabled = false;
-
         const reader = new FileReader();
         reader.onload = (event) => {
           uploadedImageUrl = event.target.result;
+          sourcePreviewImg.src = uploadedImageUrl;
+          sourcePreviewBox.classList.add('active');
+          generateBtn.disabled = false;
         };
         reader.readAsDataURL(files[0]);
       }
@@ -361,41 +488,41 @@
         progressBar.style.width = `${progress}%`;
         progressPercent.innerText = `${progress}%`;
 
-        if (progress === 40) statusText.innerText = "Applying style transfer...";
-        if (progress === 80) statusText.innerText = "Finalizing high-res outputs...";
+        if (progress === 30) statusText.innerText = "Applying style transfer layers...";
+        if (progress === 70) statusText.innerText = "Rendering 4K resolution textures...";
 
         if (progress >= 100) {
           clearInterval(interval);
           setTimeout(() => {
             progressSection.classList.remove('active');
-            renderBlurredPreviews();
+            renderVariationsGallery();
             generateBtn.disabled = false;
-          }, 400);
+          }, 300);
         }
-      }, 150);
+      }, 140);
     });
 
-    // Direct PNG file paths matching repository root output folder
+    // Output PNG paths located in repository 'output' folder
     const outputFiles = [
-      { path: 'output/1.png', name: 'AI_Output_1.png' },
-      { path: 'output/2.png', name: 'AI_Output_2.png' },
-      { path: 'output/3.png', name: 'AI_Output_3.png' },
-      { path: 'output/4.png', name: 'AI_Output_4.png' },
-      { path: 'output/5.png', name: 'AI_Output_5.png' },
-      { path: 'output/6.png', name: 'AI_Output_6.png' }
+      { path: 'output/1.png', name: 'AI_Variation_1.png', style: 'Cyberpunk Neon' },
+      { path: 'output/2.png', name: 'AI_Variation_2.png', style: 'Cinematic Film' },
+      { path: 'output/3.png', name: 'AI_Variation_3.png', style: 'Noir Drama' },
+      { path: 'output/4.png', name: 'AI_Variation_4.png', style: 'Golden Hour' },
+      { path: 'output/5.png', name: 'AI_Variation_5.png', style: 'Emerald Dreams' },
+      { path: 'output/6.png', name: 'AI_Variation_6.png', style: 'Vintage Pastel' }
     ];
 
-    // CSS filter combinations for heavy blur visuals
-    const blurFilters = [
-      'blur(120px) scale(2.8) hue-rotate(60deg) saturate(2)',
-      'blur(120px) scale(2.8) hue-rotate(180deg) brightness(1.2)',
-      'blur(120px) scale(2.8) hue-rotate(240deg) contrast(1.8)',
-      'blur(120px) scale(2.8) hue-rotate(300deg) saturate(2.5)',
-      'blur(120px) scale(2.8) sepia(1) hue-rotate(90deg)',
-      'blur(120px) scale(2.8) invert(0.8) hue-rotate(120deg)'
+    // CSS filters applied to user image to generate distinct real-time previews
+    const styleFilters = [
+      'hue-rotate(190deg) contrast(1.35) saturate(2) brightness(1.1)',
+      'contrast(1.2) saturate(0.85) sepia(0.2) brightness(1.05)',
+      'grayscale(1) contrast(1.6) brightness(0.9)',
+      'sepia(0.6) hue-rotate(-20deg) saturate(1.8) brightness(1.1)',
+      'hue-rotate(90deg) saturate(1.6) contrast(1.25)',
+      'sepia(0.3) saturate(1.3) hue-rotate(290deg) brightness(1.15)'
     ];
 
-    function renderBlurredPreviews() {
+    function renderVariationsGallery() {
       outputSection.classList.add('active');
       galleryGrid.innerHTML = '';
 
@@ -403,22 +530,31 @@
         const itemCard = document.createElement('div');
         itemCard.className = 'gallery-item';
 
-        const img = document.createElement('img');
-        img.className = 'blurred-img';
-        img.src = uploadedImageUrl; 
-        img.style.filter = blurFilters[index % blurFilters.length];
+        // Style Tag
+        const tag = document.createElement('div');
+        tag.className = 'style-tag';
+        tag.innerText = file.style;
 
+        // Preview Image using uploaded base + style filter
+        const img = document.createElement('img');
+        img.className = 'preview-img';
+        img.src = uploadedImageUrl; 
+        img.style.filter = styleFilters[index % styleFilters.length];
+
+        // Hover Overlay with Download Action
         const overlay = document.createElement('div');
         overlay.className = 'gallery-overlay';
 
         const downloadBtn = document.createElement('button');
         downloadBtn.className = 'btn-item-download';
-        downloadBtn.innerText = `⬇️ Download Variation ${index + 1}`;
+        downloadBtn.innerHTML = `⬇️ Download PNG`;
 
         overlay.appendChild(downloadBtn);
+        itemCard.appendChild(tag);
         itemCard.appendChild(img);
         itemCard.appendChild(overlay);
 
+        // Entire Card is an Active Download Button
         itemCard.addEventListener('click', () => {
           downloadDirectPng(file.path, file.name);
         });
@@ -427,6 +563,7 @@
       });
     }
 
+    // Master Download All Handler
     downloadAllBtn.addEventListener('click', async () => {
       downloadAllBtn.innerText = '⏳ Downloading All...';
       downloadAllBtn.disabled = true;
@@ -436,10 +573,11 @@
         await new Promise(resolve => setTimeout(resolve, 400));
       }
 
-      downloadAllBtn.innerText = '⬇️ Download All (6 Images)';
+      downloadAllBtn.innerText = '⬇️ Download All (6 PNGs)';
       downloadAllBtn.disabled = false;
     });
 
+    // Directly fetches PNG from repository 'output' folder & triggers browser save
     async function downloadDirectPng(filePath, saveFileName) {
       try {
         const response = await fetch(filePath, { cache: 'no-cache' });
@@ -458,7 +596,7 @@
         URL.revokeObjectURL(blobUrl);
 
       } catch (err) {
-        alert(`Could not download ${saveFileName}. Ensure the file exists in your repository at ${filePath}.`);
+        alert(`Could not download ${saveFileName}. Verify the image file exists at location "${filePath}" in your GitHub repo.`);
         console.error(err);
       }
     }
